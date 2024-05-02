@@ -46,6 +46,58 @@ app.post("/create-post", async (req, res) => {
   }
 });
 
+app.get("/get-post", async (req, res) => {
+  try {
+    const data = await User.find();
+    console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.put("/edit-post/:userID", async (req, res) => {
+  try {
+    const { password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+      await User.findByIdAndUpdate(req.params.userID, {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        password: hashedPassword,
+      });
+      res.status(200).send("User updated successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/get-post/:userID", async (req, res) => {
+  try {
+    const id = req.params.userID;
+    const data = await User.findById({ _id: id });
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/delete-post/:userID", async (req, res) => {
+  try {
+    const id = req.params.userID;
+    const data = await User.findByIdAndDelete({ _id: id });
+    console.log("User deleted successfully");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });

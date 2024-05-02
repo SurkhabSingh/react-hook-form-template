@@ -6,7 +6,7 @@ const App = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Form />} />
-      <Route path="/edit-form" element={<EditForm />} />
+      <Route path="/edit-form/:userID" element={<EditForm />} />
     </Routes>
   </BrowserRouter>
 );

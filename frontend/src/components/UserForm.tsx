@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { UserList } from "./UserList";
 
 import { z } from "zod";
+import { useEffect, useState } from "react";
 const schema = z.object({
   name: z.string().min(5, { message: "Name must have atleast 5 characters." }),
   email: z.string().email(),
@@ -33,6 +35,23 @@ const UseForm = () => {
 
     const result = await axios.post("http://localhost:5000/create-post", data);
     console.log(result);
+    getData();
+  };
+
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    getData();
+  }, []);
+  const getData = async () => {
+    try {
+      const result = await axios.get("http://localhost:5000/get-post");
+
+      const final = result.data;
+
+      setData(final);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -74,9 +93,11 @@ const UseForm = () => {
           <div className="text-red-500">{errors.password.message}</div>
         )}
         <button disabled={isSubmitting} type="submit">
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isSubmitting ? "Submitting..." : "Submitted"}
         </button>
       </form>
+
+      <UserList data={data} />
     </div>
   );
 };
